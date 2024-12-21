@@ -1,0 +1,12 @@
+{
+    "name": "Node.js & TypeScript",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+    "remoteUser": "node",
+    "containerUser": "node",
+    "postStartCommand": "npm -i",
+    "runArgs": ["--userns=keep-id"],
+    "containerEnv": {
+        "HOME": "/home/node"
+    },
+    "updateRemoteUserUID": true
+}
