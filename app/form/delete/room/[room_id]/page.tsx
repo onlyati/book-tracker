@@ -17,6 +17,9 @@ export default function Page() {
     // This is a dynamic route, and because it is on client side useParams hook can retrieve the data
     const p: { room_id: string } = useParams();
 
+    // URL decode the room id
+    p.room_id = decodeURI(p.room_id);
+
     // The useActionState hook connect the server process with this client page
     const [state, formAction] = useActionState(DeleteRoomAction.bind(null, p.room_id), {
         message: null,

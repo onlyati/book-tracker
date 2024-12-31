@@ -42,7 +42,9 @@ export default async function AddRoomAction(
     const name: string =
         formData.get("name")?.toString() ??
         FailedToFetch("failed to fetch 'name' on /form/add/room");
-    const path: string = name.toLowerCase().replaceAll(" ", "_");
+
+    // Remove all non-englihs character from room name, make it lower case and replace spaces with underscores
+    const path: string = name.replace(/[^a-zA-Z0-9 ]/g, "");
     const desc: string | null = formData.get("desc")?.toString() ?? null;
 
     // Looking for forbidden characters, they just cause trouble
