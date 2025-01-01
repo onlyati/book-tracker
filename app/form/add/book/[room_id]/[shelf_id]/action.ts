@@ -2,7 +2,7 @@
 
 import { BookResult, CreateBook } from "@/lib/book";
 import { GetRoom } from "@/lib/room";
-import { ShelfResult, CreateShelf, GetShelf } from "@/lib/shelf";
+import { GetShelf } from "@/lib/shelf";
 import { permanentRedirect } from "next/navigation";
 
 /**
@@ -75,7 +75,7 @@ export default async function AddBookAction(
 
     console.log(book["title"]);
     console.log(book["authors"]);
-    var cover = null;
+    let cover = null;
     if (book["cover"] !== undefined) {
         cover = book["cover"]["large"];
     }

@@ -28,7 +28,6 @@ export default async function UpdateRoomAction(
     const name: string =
         formData.get("name")?.toString() ??
         FailedToFetch("failed to fetch 'name' on /form/add/room");
-    const path: string = name.toLowerCase().replaceAll(" ", "_");
     const desc: string | null = formData.get("desc")?.toString() ?? null;
 
     // Looking for forbidden characters, they just cause trouble

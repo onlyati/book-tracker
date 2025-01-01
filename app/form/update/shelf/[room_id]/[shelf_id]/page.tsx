@@ -4,9 +4,9 @@ import Card from "@/app/components/Card";
 import NeutralTextInput from "@/app/components/Forms/NeutralTextInput";
 import { useParams } from "next/navigation";
 import WarnButton from "@/app/components/Button/WarnButton";
-import { useActionState, useEffect, useState } from "react";
+import { JSX, useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Room, Shelf } from "@prisma/client";
+import { Shelf } from "@prisma/client";
 import { IoCloudDownloadOutline } from "react-icons/io5";
 import { GetShelf } from "@/lib/shelf";
 import UpdateShelfAction from "./action";
@@ -60,7 +60,7 @@ export default function Page(): JSX.Element {
             }
         };
         loadForm();
-    }, [router, p.room_id, state]);
+    }, [router, p.room_id, state, p.shelf_id]);
 
     if (isLoading) {
         return (

@@ -149,7 +149,7 @@ export async function DeleteBook(book_id: number): Promise<BookResult> {
     const prism = new PrismaClient();
 
     // Delete book from the database
-    var book = null;
+    let book = null;
     try {
         book = await prism.book.delete({
             where: {

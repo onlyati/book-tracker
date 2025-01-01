@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { JSX } from "react";
 import { FaSearch } from "react-icons/fa";
 
 /**

@@ -3,6 +3,7 @@ import { LuBookCopy } from "react-icons/lu";
 import Link from "next/link";
 import DarkModeSwitch from "./DarkModeSwitch";
 import NavBar from "../Navbar/NavBar";
+import { JSX } from "react";
 
 /**
  * This is a header that displayed on the top of the page. This header dsiplay an icon, title and search box.

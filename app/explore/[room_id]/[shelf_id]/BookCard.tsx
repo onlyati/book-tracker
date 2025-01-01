@@ -1,5 +1,6 @@
 import Card from "@/app/components/Card";
 import { GetBook } from "@/lib/book";
+import Image from "next/image";
 
 /**
  * Properties for RoomCard
@@ -21,9 +22,11 @@ export default async function BookCard(props: BookCardProps) {
         <Card className="flex flex-col md:flex-row gap-4">
             <div>
                 {book?.cover !== null && (
-                    <img
+                    <Image
                         src={book?.cover ?? ""}
                         alt="Book cover"
+                        width={256}
+                        height={384}
                         className="object-cover w-64 h-96"
                     />
                 )}

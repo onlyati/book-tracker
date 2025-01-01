@@ -110,7 +110,7 @@ export async function UpdateShelf(
     }
 
     // Try to update shelf
-    var shelf = null;
+    let shelf = null;
     try {
         shelf = await prism.shelf.update({
             where: {
@@ -174,7 +174,7 @@ export async function DeleteShelf(id: number): Promise<ShelfResult> {
     }
 
     // Try to perform deletion
-    var shelf = null;
+    let shelf = null;
     try {
         shelf = await prism.shelf.delete({
             where: {

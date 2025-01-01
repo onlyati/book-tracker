@@ -1,4 +1,3 @@
-import { PrismaClient, Room } from "@prisma/client";
 import RoomCard from "./RoomCard";
 import Link from "next/link";
 import OkButton from "../components/Button/OkButton";
@@ -14,10 +13,7 @@ export const dynamic = 'force-dynamic'
  */
 export default async function Explore() {
     const rooms: RoomResult = await GetAllRooms();
-    var list = rooms.rooms;
-    if (list === null) {
-        list = [];
-    }
+    const list = rooms.rooms ?? [];
 
     return (
         <>

@@ -104,7 +104,7 @@ export async function DeleteRoom(room_id: string): Promise<RoomResult> {
     }
 
     // Try to perform deletion
-    var room = null;
+    let room = null;
     try {
         room = await prism.room.delete({
             where: {
@@ -161,7 +161,7 @@ export async function UpdateRoom(
     }
 
     // Try to update room
-    var room = null;
+    let room = null;
     try {
         room = await prism.room.update({
             where: {

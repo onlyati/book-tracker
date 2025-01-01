@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import WarnButton from "@/app/components/Button/WarnButton";
 import UpdateRoomAction from "./action";
 import { GetRoom } from "@/lib/room";
-import { useActionState, useEffect, useState } from "react";
+import { JSX, useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Room } from "@prisma/client";
 import { IoCloudDownloadOutline } from "react-icons/io5";

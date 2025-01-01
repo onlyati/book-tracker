@@ -14,10 +14,7 @@ export default async function Page({
 }) {
     const p = await params;
     const shelves: ShelfResult = await GetShelves(decodeURI(p.room_id));
-    var list = shelves.shelves;
-    if (list === null) {
-        list = [];
-    }
+    const list = shelves.shelves ?? [];
 
     const room: RoomResult = await GetRoom(decodeURI(p.room_id));
 
