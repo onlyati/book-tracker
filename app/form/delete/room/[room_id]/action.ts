@@ -1,23 +1,8 @@
 "use server";
 
-import { Prisma, Room } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+import { RoomResult } from "@/lib/room";
+import { DeleteRoom } from "@/lib/room";
 import { permanentRedirect } from "next/navigation";
-
-/**
- * Server action return with these information
- */
-export type DeleteRoomActionResponse = {
-    /**
-     * In case of fail, this is not null, but a description about the problem
-     */
-    message: string | null;
-
-    /**
-     * In case of successful action, return with the created resource
-     */
-    room: Room | null;
-};
 
 /**
  * Arbitrary function becaseu '??' did not let me to specify throw error there
@@ -36,9 +21,9 @@ function FailedToFetch(message: string): string {
  */
 export default async function DeleteRoomAction(
     rid: string,
-    _: DeleteRoomActionResponse,
+    _: RoomResult,
     formData: FormData
-): Promise<DeleteRoomActionResponse> {
+): Promise<RoomResult> {
     // Convert `string | undefined` to `string | null` because
     // Prisma accept that one but FormData sends the first one
     const path: string =
@@ -51,40 +36,13 @@ export default async function DeleteRoomAction(
             message:
                 "You must type `" + rid + "` but yout passed `" + path + "`",
             room: null,
+            rooms: null,
         };
     }
 
-    const prisma = new PrismaClient();
-
-    // If room does not exist no need to do anything
-    const counter = await prisma.room.count({
-        where: {
-            path: path,
-        },
-    });
-    if (counter === 0) {
-        return {
-            message: "Room does not exists",
-            room: null,
-        };
-    }
-
-    // Try to perform deletion
-    try {
-        const room = await prisma.room.delete({
-            where: {
-                path: path,
-            },
-        });
-        console.log("deleted room: " + JSON.stringify(room));
-    } catch (e) {
-        console.log(e);
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            return {
-                message: "Internal Server Error (databse error " + e.code + ")",
-                room: null,
-            };
-        }
+    const room = await DeleteRoom(rid);
+    if (room.message !== null) {
+        return room;
     }
 
     permanentRedirect("/explore");

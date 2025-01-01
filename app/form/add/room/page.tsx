@@ -14,6 +14,7 @@ export default function Add() {
     const [state, formAction] = useActionState(AddRoomAction, {
         message: null,
         room: null,
+        rooms: null,
     });
 
     return (

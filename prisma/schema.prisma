@@ -33,7 +33,7 @@ model Book {
     author      String?
     description String?
     cover       String?
-    isbn        Int
+    isbn        String
     shelf       Shelf   @relation(fields: [shelfId], references: [id])
     shelfId     Int
 }

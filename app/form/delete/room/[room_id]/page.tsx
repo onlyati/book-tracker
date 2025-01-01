@@ -24,6 +24,7 @@ export default function Page() {
     const [state, formAction] = useActionState(DeleteRoomAction.bind(null, p.room_id), {
         message: null,
         room: null,
+        rooms: null,
     });
 
     return (

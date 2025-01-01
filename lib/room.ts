@@ -1,4 +1,12 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+"use server"
+
+import { Prisma, PrismaClient, Room } from "@prisma/client";
+
+export type RoomResult = {
+    message: string | null;
+    room: Room | null;
+    rooms: Room[] | null;
+};
 
 /**
  * Server action return with these information
@@ -6,7 +14,10 @@ import { Prisma, PrismaClient } from "@prisma/client";
  * @param description Room description
  * @returns Status of the action with room data
  */
-export async function NewRoom(room: string, description: string | null) {
+export async function NewRoom(
+    room: string,
+    description: string | null
+): Promise<RoomResult> {
     const prism = new PrismaClient();
 
     // Remove all non-englihs character from room name, make it lower case and replace spaces with underscores
@@ -16,13 +27,14 @@ export async function NewRoom(room: string, description: string | null) {
     const counter = await prism.room.count({
         where: {
             OR: [{ name: room }, { path: room_id }],
-        }
+        },
     });
 
     if (counter > 0) {
         return {
             message: "Room already exists",
             room: null,
+            rooms: null,
         };
     }
 
@@ -37,25 +49,30 @@ export async function NewRoom(room: string, description: string | null) {
             },
         });
         console.log("created room: " + JSON.stringify(new_room));
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return {
-                message: "Internal Server Error (database error " + e.code + ")",
+                message:
+                    "Internal Server Error (database error " + e.code + ")",
                 room: null,
+                rooms: null,
             };
         }
     }
+    return {
+        message: null,
+        room: new_room,
+        rooms: null,
+    };
 }
-
 
 /**
  * Function that delete a room if exists else return with error message
  * @parm room_id Room id
  * @returns Status of the action with room data
  */
-export async function DeleteRoom(room_id: string) {
+export async function DeleteRoom(room_id: string): Promise<RoomResult> {
     const prism = new PrismaClient();
 
     // If room does not exist no need to do anything
@@ -68,27 +85,35 @@ export async function DeleteRoom(room_id: string) {
         return {
             message: "Room does not exists",
             room: null,
+            rooms: null,
         };
-    };
+    }
 
     // Try to perform deletion
+    var room = null;
     try {
-        const room = await prism.room.delete({
+        room = await prism.room.delete({
             where: {
                 path: room_id,
             },
         });
         console.log("deleted room: " + JSON.stringify(room));
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return {
-                message: "Internal Server Error (database error " + e.code + ")",
+                message:
+                    "Internal Server Error (database error " + e.code + ")",
                 room: null,
+                rooms: null,
             };
         }
     }
+    return {
+        message: null,
+        room: room,
+        rooms: null,
+    };
 }
 
 /**
@@ -98,7 +123,11 @@ export async function DeleteRoom(room_id: string) {
  * @param new_desc New description of the room
  * @returns Status of the action with room data
  */
-export async function UpdateRoom(room_id: string, new_name: string, new_desc: string | null) {
+export async function UpdateRoom(
+    room_id: string,
+    new_name: string,
+    new_desc: string | null
+): Promise<RoomResult> {
     const prism = new PrismaClient();
 
     // If room does not exist no need to do anything
@@ -109,15 +138,18 @@ export async function UpdateRoom(room_id: string, new_name: string, new_desc: st
     });
 
     if (counter === 0) {
-        return {
+        const result = {
             message: "Room does not exists",
             room: null,
+            rooms: null,
         };
+        return result;
     }
 
     // Try to update room
+    var room = null;
     try {
-        const room = await prism.room.update({
+        room = await prism.room.update({
             where: {
                 path: room_id,
             },
@@ -127,16 +159,22 @@ export async function UpdateRoom(room_id: string, new_name: string, new_desc: st
             },
         });
         console.log("updated room: " + JSON.stringify(room));
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return {
-                message: "Internal Server Error (database error " + e.code + ")",
+                message:
+                    "Internal Server Error (database error " + e.code + ")",
                 room: null,
+                rooms: null,
             };
         }
     }
+    return {
+        message: null,
+        room: room,
+        rooms: null,
+    };
 }
 
 /**
@@ -144,7 +182,7 @@ export async function UpdateRoom(room_id: string, new_name: string, new_desc: st
  * @param room_id Room id
  * @returns Room data
  */
-export async function GetRoom(room_id: string) {
+export async function GetRoom(room_id: string): Promise<RoomResult> {
     const prism = new PrismaClient();
 
     const room = await prism.room.findUnique({
@@ -153,17 +191,25 @@ export async function GetRoom(room_id: string) {
         },
     });
 
-    return room;
+    return {
+        message: null,
+        room: room,
+        rooms: null,
+    };
 }
 
 /**
  * Get all rooms
  * @returns All rooms
  */
-export async function GetAllRooms() {
+export async function GetAllRooms(): Promise<RoomResult> {
     const prism = new PrismaClient();
 
     const rooms = await prism.room.findMany();
 
-    return rooms;
+    return {
+        message: null,
+        room: null,
+        rooms: rooms,
+    };
 }

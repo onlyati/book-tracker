@@ -4,7 +4,8 @@ import Card from "@/app/components/Card";
 import NeutralTextInput from "@/app/components/Forms/NeutralTextInput";
 import { useParams } from "next/navigation";
 import WarnButton from "@/app/components/Button/WarnButton";
-import UpdateRoomAction, { GetRoom } from "./action";
+import UpdateRoomAction from "./action";
+import { GetRoom } from "@/lib/room";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Room } from "@prisma/client";
@@ -31,18 +32,24 @@ export default function Page(): JSX.Element {
         {
             message: null,
             room: null,
+            rooms: null,
         }
     );
 
     useEffect(() => {
         const loadForm = async () => {
-            const room = await GetRoom(p.room_id);
+            const room = await GetRoom(decodeURI(p.room_id));
             if (room === null) {
                 router.push("/explore");
                 return;
             }
 
-            setRoom(room);
+            if (room.room === null) {
+                router.push("/explore");
+                return;
+            }
+
+            setRoom(room.room);
             setIsLoading(false);
 
             if (state !== null || state !== undefined) {
