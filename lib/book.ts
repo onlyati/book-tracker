@@ -2,7 +2,7 @@
 
 import { Prisma, PrismaClient, Book } from "@prisma/client";
 
-type BookResult = {
+export type BookResult = {
     message: string | null;
     book: Book | null;
     books: Book[] | null;
@@ -167,6 +167,28 @@ export async function DeleteBook(book_id: number): Promise<BookResult> {
             };
         }
     }
+    return {
+        message: null,
+        book: book,
+        books: null,
+    };
+}
+
+
+/**
+ * Get based based on its ISBN number
+ * @param isbn ISBN number
+ * @returns Book data
+ */
+export async function GetBook(isbn: string): Promise<BookResult> {
+    const prism = new PrismaClient();
+
+    // Get book based on its ISBN number
+    const book = await prism.book.findUnique({
+        where: {
+            isbn: isbn,
+        },
+    });
     return {
         message: null,
         book: book,
