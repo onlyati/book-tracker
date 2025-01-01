@@ -1,4 +1,13 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+"use server";
+
+import { Prisma, PrismaClient, Shelf } from "@prisma/client";
+import { DeleteBook, GetBooks } from "./book";
+
+export type ShelfResult = {
+    message: string | null;
+    shelf: Shelf | null;
+    shelves: Shelf[] | null;
+};
 
 /**
  * This function create a new Shelf if not already exists within the room
@@ -8,10 +17,10 @@ import { Prisma, PrismaClient } from "@prisma/client";
  * @returns Status of the action with shelf data
  */
 export async function CreateShelf(
-    room_id: string,
+    room_id: number,
     name: string,
     description: string | null
-) {
+): Promise<ShelfResult> {
     const prism = new PrismaClient();
 
     // Creat a new shelf correlation with the room table
@@ -22,7 +31,7 @@ export async function CreateShelf(
                 name: name,
                 room: {
                     connect: {
-                        path: room_id,
+                        id: room_id,
                     },
                 },
                 description: description,
@@ -36,8 +45,14 @@ export async function CreateShelf(
                 message:
                     "Internal Server Error (database error " + e.code + ")",
                 shelf: null,
+                shelves: null,
             };
         }
+    }
+    return {
+        message: null,
+        shelf: shelf,
+        shelves: null,
     }
 }
 
@@ -46,7 +61,7 @@ export async function CreateShelf(
  * @param room_id Room id
  * @returns List of shelves
  */
-export async function GetShelves(room_id: string) {
+export async function GetShelves(room_id: string): Promise<ShelfResult> {
     const prism = new PrismaClient();
 
     // Get all shelves from the room
@@ -58,7 +73,11 @@ export async function GetShelves(room_id: string) {
         },
     });
 
-    return shelves;
+    return {
+        message: null,
+        shelf: null,
+        shelves: shelves,
+    };
 }
 
 /**
@@ -72,7 +91,7 @@ export async function UpdateShelf(
     id: number,
     new_name: string,
     new_desc: string | null
-) {
+): Promise<ShelfResult> {
     const prism = new PrismaClient();
 
     // If shelf does not exist no need to do anything
@@ -86,12 +105,14 @@ export async function UpdateShelf(
         return {
             message: "Shelf does not exists",
             shelf: null,
+            shelves: null,
         };
     }
 
     // Try to update shelf
+    var shelf = null;
     try {
-        const shelf = await prism.shelf.update({
+        shelf = await prism.shelf.update({
             where: {
                 id: id,
             },
@@ -108,8 +129,14 @@ export async function UpdateShelf(
                 message:
                     "Internal Server Error (database error " + e.code + ")",
                 shelf: null,
+                shelves: null,
             };
         }
+    }
+    return {
+        message: null,
+        shelf: shelf,
+        shelves: null,
     }
 }
 
@@ -118,7 +145,7 @@ export async function UpdateShelf(
  * @param shelf_id Shelf id
  * @returns Status of the action with shelf data
  */
-export async function DeleteShelf(id: number) {
+export async function DeleteShelf(id: number): Promise<ShelfResult> {
     const prism = new PrismaClient();
 
     // If shelf does not exist no need to do anything
@@ -132,12 +159,24 @@ export async function DeleteShelf(id: number) {
         return {
             message: "Shelf does not exists",
             shelf: null,
+            shelves: null,
         };
     }
 
+    // Delete all books from the shelf
+    const books = await GetBooks(id);
+    if (books !== null) {
+        if (books.books !== null) {
+            for (const book of books.books) {
+                await DeleteBook(book.id);
+            }
+        }
+    }
+
     // Try to perform deletion
+    var shelf = null;
     try {
-        const shelf = await prism.shelf.delete({
+        shelf = await prism.shelf.delete({
             where: {
                 id: id,
             },
@@ -150,8 +189,14 @@ export async function DeleteShelf(id: number) {
                 message:
                     "Internal Server Error (database error " + e.code + ")",
                 shelf: null,
+                shelves: null,
             };
         }
+    }
+    return {
+        message: null,
+        shelf: shelf,
+        shelves: null,
     }
 }
 
@@ -160,7 +205,7 @@ export async function DeleteShelf(id: number) {
  * @param shelf_id Shelf id
  * @returns Shelf data
  */
-export async function GetShelf(id: number) {
+export async function GetShelf(id: number): Promise<ShelfResult> {
     const prism = new PrismaClient();
 
     // Get shelf based on its id
@@ -170,5 +215,27 @@ export async function GetShelf(id: number) {
         },
     });
 
-    return shelf;
+    return {
+        message: null,
+        shelf: shelf,
+        shelves: null,
+    }
+}
+
+/**
+ * Function to get all shelves
+ * @param room_id Room id
+ * @returns List of shelves
+ */
+export async function GetAllShelves(): Promise<ShelfResult> {
+    const prism = new PrismaClient();
+
+    // Get all shelves
+    const shelves = await prism.shelf.findMany();
+
+    return {
+        message: null,
+        shelf: null,
+        shelves: shelves,
+    };
 }

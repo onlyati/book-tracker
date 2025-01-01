@@ -3,15 +3,19 @@
 import Card from "@/app/components/Card";
 import OkButton from "@/app/components/Button/OkButton";
 import { useActionState } from "react";
-import AddRoomAction from "./action";
 import NeutralTextInput from "@/app/components/Forms/NeutralTextInput";
+import { useParams } from "next/navigation";
+import AddShelfAction from "./action";
 
 /**
  * Return with a client side form where user can build new rooms.
  * @returns Rendered form
  */
-export default function AddRoom() {
-    const [state, formAction] = useActionState(AddRoomAction, {
+export default function Add() {
+    const p: { room_id: string } = useParams();
+    p.room_id = decodeURI(p.room_id);
+
+    const [state, formAction] = useActionState(AddShelfAction.bind(null, p.room_id), {
         message: null,
         room: null,
         rooms: null,
@@ -21,24 +25,24 @@ export default function AddRoom() {
         <Card>
             <form action={formAction}>
                 <h1 className="text-2xl md:text-4xl text-center">
-                    Build new room
+                    Add new shelf
                 </h1>
                 <div className="flex flex-col gap-8 mt-6 md:mt-16">
                     <NeutralTextInput
-                        placeholder="Name of the room"
+                        placeholder="Name of the shelf"
                         elemName="name"
                         maxLength={16}
                         errorText={state?.message}
                         required={true}
-                        value={state?.room?.name ?? ""}
+                        value={state?.shelf?.name ?? ""}
                     />
                     <NeutralTextInput
-                        placeholder="Room's description"
+                        placeholder="Shelf's description"
                         elemName="desc"
                         maxLength={80}
                         errorText={null}
                         required={false}
-                        value={state?.room?.description ?? ""}
+                        value={state?.shelf?.description ?? ""}
                     />
                     <OkButton type="submit">Build room</OkButton>
                 </div>

@@ -1,6 +1,7 @@
-"use server"
+"use server";
 
 import { Prisma, PrismaClient, Room } from "@prisma/client";
+import { DeleteShelf, GetShelves } from "./shelf";
 
 export type RoomResult = {
     message: string | null;
@@ -21,7 +22,10 @@ export async function NewRoom(
     const prism = new PrismaClient();
 
     // Remove all non-englihs character from room name, make it lower case and replace spaces with underscores
-    const room_id: string = room.replace(/[^a-zA-Z0-9 ]/g, "");
+    const room_id: string = room
+        .replace(/[^a-zA-Z0-9 ]/g, "")
+        .replaceAll(" ", "_")
+        .toLowerCase();
 
     // Check if room already exists
     const counter = await prism.room.count({
@@ -87,6 +91,16 @@ export async function DeleteRoom(room_id: string): Promise<RoomResult> {
             room: null,
             rooms: null,
         };
+    }
+
+    // Delete all shelf that belongs to this room
+    const shelves = await GetShelves(room_id);
+    if (shelves !== null) {
+        if (shelves.shelves !== null) {
+            for (const shelf of shelves.shelves) {
+                await DeleteShelf(shelf.id);
+            }
+        }
     }
 
     // Try to perform deletion
@@ -156,6 +170,10 @@ export async function UpdateRoom(
             data: {
                 name: new_name,
                 description: new_desc,
+                path: new_name
+                    .replace(/[^a-zA-Z0-9 ]/g, "")
+                    .replaceAll(" ", "_")
+                    .toLowerCase(),
             },
         });
         console.log("updated room: " + JSON.stringify(room));

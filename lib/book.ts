@@ -1,4 +1,12 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+"use server";
+
+import { Prisma, PrismaClient, Book } from "@prisma/client";
+
+type BookResult = {
+    message: string | null;
+    book: Book | null;
+    books: Book[] | null;
+};
 
 /**
  * This function create a new Book item if it is not already exists
@@ -17,7 +25,7 @@ export async function CreateBook(
     description: string | null,
     isbn: string,
     cover: string | null
-) {
+): Promise<BookResult> {
     const prism = new PrismaClient();
 
     // Create a new book correlation with the shelf table
@@ -44,10 +52,16 @@ export async function CreateBook(
             return {
                 message:
                     "Internal Server Error (database error " + e.code + ")",
-                shelf: null,
+                book: null,
+                books: null,
             };
         }
     }
+    return {
+        message: null,
+        book: book,
+        books: null,
+    };
 }
 
 /**
@@ -55,7 +69,7 @@ export async function CreateBook(
  * @param shelf_id Shelf id
  * @returns List of books
  */
-export async function GetBooks(shelf_id: number) {
+export async function GetBooks(shelf_id: number): Promise<BookResult> {
     const prism = new PrismaClient();
 
     // Get all books from the shelf
@@ -66,7 +80,11 @@ export async function GetBooks(shelf_id: number) {
             },
         },
     });
-    return books;
+    return {
+        message: null,
+        book: null,
+        books: books,
+    };
 }
 
 /**
@@ -85,8 +103,8 @@ export async function UpdateBook(
     new_author: string,
     new_desc: string | null,
     new_isbn: string,
-    new_cover: string | null)
-{
+    new_cover: string | null
+): Promise<BookResult> {
     const prism = new PrismaClient();
 
     // Update book data
@@ -104,17 +122,22 @@ export async function UpdateBook(
                 cover: new_cover,
             },
         });
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return {
                 message:
                     "Internal Server Error (database error " + e.code + ")",
                 book: null,
+                books: null,
             };
         }
     }
+    return {
+        message: null,
+        book: book,
+        books: null,
+    };
 }
 
 /**
@@ -122,25 +145,31 @@ export async function UpdateBook(
  * @param book_id Book id
  * @returns Status of the action
  */
-export async function DeleteBook(book_id: number) {
+export async function DeleteBook(book_id: number): Promise<BookResult> {
     const prism = new PrismaClient();
 
     // Delete book from the database
+    var book = null;
     try {
-        await prism.book.delete({
+        book = await prism.book.delete({
             where: {
                 id: book_id,
             },
         });
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return {
                 message:
                     "Internal Server Error (database error " + e.code + ")",
+                book: null,
+                books: null,
             };
         }
     }
+    return {
+        message: null,
+        book: book,
+        books: null,
+    };
 }
-
