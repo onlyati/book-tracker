@@ -1,7 +1,6 @@
 "use server";
 
-import { RoomResult } from "@/lib/room";
-import { DeleteRoom } from "@/lib/room";
+import { DeleteShelf, ShelfResult } from "@/lib/shelf";
 import { permanentRedirect } from "next/navigation";
 
 /**
@@ -19,31 +18,32 @@ function FailedToFetch(message: string): string {
  * @param formData Data from form
  * @returns Status of the action with room data
  */
-export default async function DeleteRoomAction(
-    rid: string,
-    _: RoomResult,
+export default async function DeleteShelfAction(
+    room_id: string,
+    shelf_id: string,
+    _: ShelfResult,
     formData: FormData
-): Promise<RoomResult> {
+): Promise<ShelfResult> {
     // Convert `string | undefined` to `string | null` because
     // Prisma accept that one but FormData sends the first one
-    const path: string =
+    const form_shelf_id: string =
         formData.get("verify")?.toString() ??
         FailedToFetch("failed to fetch 'name' on /form/delete/room/[room_id]");
 
     // If there is a typo during verification send error back
-    if (rid !== path) {
+    if (shelf_id !== form_shelf_id) {
         return {
             message:
-                "You must type `" + rid + "` but yout passed `" + path + "`",
-            room: null,
-            rooms: null,
+                "You must type `" + shelf_id + "` but yout passed `" + form_shelf_id + "`",
+            shelf: null,
+            shelves: null,
         };
     }
 
-    const room = await DeleteRoom(rid);
-    if (room.message !== null) {
-        return room;
+    const shelf = await DeleteShelf(Number(shelf_id));
+    if (shelf.message !== null) {
+        return shelf;
     }
 
-    permanentRedirect("/explore");
+    permanentRedirect("/explore/" + room_id);
 }

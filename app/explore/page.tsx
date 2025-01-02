@@ -1,8 +1,8 @@
-import { PrismaClient, Room } from "@prisma/client";
 import RoomCard from "./RoomCard";
 import Link from "next/link";
 import OkButton from "../components/Button/OkButton";
 import { MdAddCircleOutline } from "react-icons/md";
+import { GetAllRooms, RoomResult } from "@/lib/room";
 
 export const dynamic = 'force-dynamic'
 
@@ -12,13 +12,13 @@ export const dynamic = 'force-dynamic'
  * @returns Rendered explore page
  */
 export default async function Explore() {
-    const prisma = new PrismaClient();
-    const rooms: Room[] = await prisma.room.findMany();
+    const rooms: RoomResult = await GetAllRooms();
+    const list = rooms.rooms ?? [];
 
     return (
         <>
             <div className="flex flex-col md:flex-row items-center mb-6 md:mb-8">
-                <h1 className="text-2xl md:text-4xl flex-grow">Select room</h1>
+                <h1 className="text-2xl md:text-4xl flex-grow">Rooms</h1>
                 <Link href="/form/add/room" className="w-full md:w-auto mt-6 md:mt-0">
                     <OkButton className="w-full md:w-auto drop-shadow-xl flex items-center gap-2 text-xl">
                         <MdAddCircleOutline />
@@ -27,7 +27,7 @@ export default async function Explore() {
                 </Link>
             </div>
             <div className="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-                {rooms.map((room) => {
+                {list.map((room) => {
                     return (
                         <RoomCard
                             name={room.name}

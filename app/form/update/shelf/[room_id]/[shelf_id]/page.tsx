@@ -4,12 +4,12 @@ import Card from "@/app/components/Card";
 import NeutralTextInput from "@/app/components/Forms/NeutralTextInput";
 import { useParams } from "next/navigation";
 import WarnButton from "@/app/components/Button/WarnButton";
-import UpdateRoomAction from "./action";
-import { GetRoom } from "@/lib/room";
 import { JSX, useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Room } from "@prisma/client";
+import { Shelf } from "@prisma/client";
 import { IoCloudDownloadOutline } from "react-icons/io5";
+import { GetShelf } from "@/lib/shelf";
+import UpdateShelfAction from "./action";
 
 /**
  * Update form for the room
@@ -17,50 +17,50 @@ import { IoCloudDownloadOutline } from "react-icons/io5";
  */
 export default function Page(): JSX.Element {
     // This is a dynamic route, and because it is on client side useParams hook can retrieve the data
-    const p: { room_id: string } = useParams();
+    const p: { room_id: string, shelf_id: string } = useParams();
 
     // If we can't fetch data from database we redirect back to explore root page
     const router = useRouter();
 
     // Requires to render properly the component
     const [isLoading, setIsLoading] = useState(true);
-    const [room, setRoom] = useState<Room>();
+    const [shelf, setShelf] = useState<Shelf>();
 
     // The useActionState hook connect the server process with this client page
     const [state, actionForm] = useActionState(
-        UpdateRoomAction.bind(null, decodeURI(p.room_id)),
+        UpdateShelfAction.bind(null, decodeURI(p.room_id), decodeURI(p.shelf_id)),
         {
             message: null,
-            room: null,
-            rooms: null,
+            shelf: null,
+            shelves: null,
         }
     );
 
     useEffect(() => {
         const loadForm = async () => {
-            const room = await GetRoom(decodeURI(p.room_id));
-            if (room === null) {
+            const shelf = await GetShelf(Number(decodeURI(p.shelf_id)));
+            if (shelf === null) {
                 router.push("/explore");
                 return;
             }
 
-            if (room.room === null) {
+            if (shelf.shelf === null) {
                 router.push("/explore");
                 return;
             }
 
-            setRoom(room.room);
+            setShelf(shelf.shelf);
             setIsLoading(false);
 
             if (state !== null || state !== undefined) {
-                if (state.room !== null) {
-                    setRoom(state.room);
-                    console.log(state.room);
+                if (state.shelf !== null) {
+                    setShelf(state.shelf);
+                    console.log(state.shelf);
                 }
             }
         };
         loadForm();
-    }, [router, p.room_id, state]);
+    }, [router, p.room_id, state, p.shelf_id]);
 
     if (isLoading) {
         return (
@@ -84,7 +84,7 @@ export default function Page(): JSX.Element {
                         maxLength={16}
                         errorText={state?.message}
                         required={true}
-                        value={room?.name ?? ""}
+                        value={shelf?.name ?? ""}
                     />
                     <NeutralTextInput
                         placeholder="Room's description"
@@ -92,7 +92,7 @@ export default function Page(): JSX.Element {
                         maxLength={80}
                         errorText={null}
                         required={false}
-                        value={room?.description ?? ""}
+                        value={shelf?.description ?? ""}
                     />
                     <WarnButton type="submit">Update room</WarnButton>
                 </div>

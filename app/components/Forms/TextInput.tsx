@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, JSX, useState } from "react";
 import { TextInputProps } from "./TextInputProps";
 
 /**

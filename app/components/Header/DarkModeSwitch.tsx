@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 /**

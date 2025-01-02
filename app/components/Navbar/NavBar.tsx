@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import MenuItem from "./MenuItem";
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 
 /**
  * Type to store the menupoint. Item is rendered based on it.

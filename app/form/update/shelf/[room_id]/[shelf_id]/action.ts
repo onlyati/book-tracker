@@ -1,6 +1,6 @@
 "use server";
 
-import { RoomResult, NewRoom } from "@/lib/room";
+import { ShelfResult, UpdateShelf } from "@/lib/shelf";
 import { permanentRedirect } from "next/navigation";
 
 /**
@@ -12,37 +12,38 @@ function FailedToFetch(message: string): string {
 }
 
 /**
- * Server action for room creation
- * @param _ Previous state
+ * Server action for room information update
+ * @param room_id ID of the room
+ * @param _ Previous State
  * @param formData Data from the form
- * @returns Status of the action or with room data
+ * @returns With the updated room object or with an error message
  */
-export default async function AddRoomAction(
-    _: RoomResult,
+export default async function UpdateShelfAction(
+    room_id: string,
+    shelf_id: string,
+    _: ShelfResult,
     formData: FormData
-): Promise<RoomResult> {
+): Promise<ShelfResult> {
     // Convert `string | undefined` to `string | null` because
     // Prisma accept that one but FormData sends the first one
     const name: string =
         formData.get("name")?.toString() ??
         FailedToFetch("failed to fetch 'name' on /form/add/room");
-
-    // Remove all non-englihs character from room name, make it lower case and replace spaces with underscores
     const desc: string | null = formData.get("desc")?.toString() ?? null;
 
     // Looking for forbidden characters, they just cause trouble
     if (name.includes("#") || name.includes("&")) {
         return {
             message: "Name cannot contains following characters: #, &",
-            room: null,
-            rooms: null,
+            shelf: null,
+            shelves: null,
         };
     }
 
-    const room = await NewRoom(name, desc);
-    if (room.message !== null) {
-        return room;
+    const shelf = await UpdateShelf(Number(shelf_id), name, desc);
+    if (shelf.message !== null) {
+        return shelf;
     }
 
-    permanentRedirect("/explore/" + room?.room?.path);
+    permanentRedirect("/explore/" + room_id);
 }
