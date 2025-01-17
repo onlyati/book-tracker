@@ -1,6 +1,10 @@
 {
     "cSpell.words": [
+        "dbname",
+        "dbpw",
+        "gorm",
         "onlyati",
-        "openlibrary"
+        "openlibrary",
+        "sslmode"
     ]
 }

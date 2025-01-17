@@ -1,6 +1,8 @@
 package openlibrary
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type Author struct {
 	Name           string   `json:"name"`

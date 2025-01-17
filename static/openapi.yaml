@@ -1,0 +1,223 @@
+openapi: 3.1.0
+info:
+  title: Book tracker API
+  description: >-
+    This server provide access for the data and services regarding book-tracker.
+    Normally this is used by the frontend service
+  contact:
+    email: onlyati@pm.me
+  version: "1"
+tags:
+  - name: user
+    description: User settings related endpoints
+servers:
+  - url: "http://{{.HostName}}:{{.Port}}"
+    description: Host server
+paths:
+  /api/user/v1:
+    get:
+      tags:
+        - user
+      summary: Get user information
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: User does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - user
+      summary: Get user information
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: User does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      tags:
+        - user
+      summary: Update user's name
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
+        - name: new_name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User id does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: User does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - user
+      summary: Soft delete user
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: User does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/user/v1/list:
+    get:
+      tags:
+        - user
+      summary: List users
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
+      responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items: 
+                    type: "#/components/schemas/User"
+          400:
+            description: Parameter is missing
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+          500:
+            description: User does not exists
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+  /api/user/v1/cleanup:
+    delete:
+      tags:
+        - user
+      summary: Hard delete on users
+      responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items: 
+                    type: "#/components/schemas/User"
+          500:
+            description: User does not exists
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+        created_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        updated_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        deleted_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        name:
+          type: string
+        alternate_names:
+          type: array
+          items:
+            type: string
