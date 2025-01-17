@@ -1,0 +1,25 @@
+{
+	"name": "Go",
+    "dockerComposeFile": ["docker-compose.yaml"],
+    "customizations": {
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+                "ms-azuretools.vscode-docker",
+                "golang.go",
+                "jcbuisson.vue",
+                "bradlc.vscode-tailwindcss"
+			]
+		}
+	},
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"postCreateCommand": "go version",
+    "remoteUser": "vscode",
+    "containerUser": "vscode",
+    "containerEnv": {
+        "HOME": "/home/vscode"
+    },
+    "updateRemoteUserUID": true
+}

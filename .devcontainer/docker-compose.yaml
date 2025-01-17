@@ -1,0 +1,12 @@
+services:
+  app:
+    image: localhost/godev
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: abcd
+      POSTGRES_USER: rss_user
+      POSTGRES_DB: rss_db
