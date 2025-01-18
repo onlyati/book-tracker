@@ -5,6 +5,7 @@
         "gorm",
         "onlyati",
         "openlibrary",
+        "primarykey",
         "sslmode"
     ]
 }
