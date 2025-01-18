@@ -15,7 +15,7 @@ func CreateCategoryService(db *gorm.DB, name string) (*Category, error) {
 
 	// This has been soft deleted, just set "deleted_at" to null
 	if deletedCategory.Name != "" {
-		err := db.Unscoped().Model(&User{}).Where("id = ?", deletedCategory.ID).Update("deleted_at", nil).Error
+		err := db.Unscoped().Model(&Category{}).Where("id = ?", deletedCategory.ID).Update("deleted_at", nil).Error
 		if err != nil {
 			return nil, err
 		}
@@ -23,7 +23,7 @@ func CreateCategoryService(db *gorm.DB, name string) (*Category, error) {
 		return &deletedCategory, nil
 	}
 
-	// Add brand new user
+	// Add brand new category
 	category := Category{
 		Name: name,
 	}

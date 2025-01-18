@@ -40,6 +40,16 @@ func (app *App) StartListen() error {
 	userVersion1.DELETE("/", app.SoftDeleteUserV1)
 	userVersion1.DELETE("/cleanup", app.HardDeleteUsersV1)
 
+	// Category endpoints
+	category := api.Group("/category")
+	categoryVersion1 := category.Group("/v1")
+	categoryVersion1.POST("/", app.CreateCategoryV1)
+	categoryVersion1.GET("/", app.GetCategoryV1)
+	categoryVersion1.GET("/list", app.GetCategoriesV1)
+	categoryVersion1.PATCH("/", app.UpdateCategoryV1)
+	categoryVersion1.DELETE("/", app.SoftDeleteCategoryV1)
+	categoryVersion1.DELETE("/cleanup", app.HardDeleteCategoriesV1)
+
 	router.Run(":3000")
 
 	return nil

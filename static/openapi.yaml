@@ -10,6 +10,8 @@ info:
 tags:
   - name: user
     description: User settings related endpoints
+  - name: category
+    description: Category related endpoints
 servers:
   - url: "http://{{.HostName}}:{{.Port}}"
     description: Host server
@@ -194,6 +196,186 @@ paths:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Error"
+  /api/category/v1:
+    get:
+      tags:
+        - category
+      summary: Get category information
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - category
+      summary: Create new category
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      tags:
+        - category
+      summary: Update category's name
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
+        - name: new_name
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Category id does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - category
+      summary: Soft delete category
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          description: Parameter is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/category/v1/list:
+    get:
+      tags:
+        - category
+      summary: List categories
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
+      responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items: 
+                    type: "#/components/schemas/Category"
+          400:
+            description: Parameter is missing
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+          500:
+            description: Category does not exists
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+  /api/category/v1/cleanup:
+    delete:
+      tags:
+        - category
+      summary: Hard delete on category
+      responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items: 
+                    type: "#/components/schemas/Category"
+          500:
+            description: Category does not exists
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
 components:
   schemas:
     Error:
@@ -217,7 +399,19 @@ components:
           format: "1970-01-01T12:00:00.000000Z"
         name:
           type: string
-        alternate_names:
-          type: array
-          items:
-            type: string
+    Category:
+      type: object
+      properties:
+        id:
+          type: number
+        created_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        updated_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        deleted_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        name:
+          type: string
