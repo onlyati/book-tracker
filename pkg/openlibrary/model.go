@@ -30,15 +30,13 @@ type Book struct {
 	NumberOfPages int          `json:"number_of_pages"`
 	Covers        []int        `json:"covers"`
 	AuthorLinks   []AuthorLink `json:"authors"`
-	Authors       []Author     `json:"-"`
 }
 
 func (b *Book) Equals(other Book) bool {
 	if (b.Title != other.Title) ||
 		(b.NumberOfPages != other.NumberOfPages) ||
 		(!reflect.DeepEqual(b.Covers, other.Covers)) ||
-		(!reflect.DeepEqual(b.AuthorLinks, other.AuthorLinks)) ||
-		(!reflect.DeepEqual(b.Authors, other.Authors)) {
+		(!reflect.DeepEqual(b.AuthorLinks, other.AuthorLinks)) {
 		return false
 	}
 	return true

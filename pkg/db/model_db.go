@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Model struct { // size=88 (0x58)
+type Model struct {
 	ID        uint64         `gorm:"primarykey" json:"id"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
@@ -30,6 +30,7 @@ type Book struct {
 	Authors       []*Author   `json:"-" gorm:"many2many:author_books"`
 	Users         []*User     `json:"-" gorm:"many2many:user_books"`
 	Categories    []*Category `json:"-" gorm:"many2many:category_books"`
+	ISBN          int         `˙json:"isbn"`
 }
 
 type Category struct {

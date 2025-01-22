@@ -13,8 +13,7 @@ var (
 			{Key: "/authors/OL1420926A"},
 			{Key: "/authors/OL3105377A"},
 		},
-		Authors: nil,
-		Covers:  []int{8746964},
+		Covers: []int{8746964},
 	}
 )
 

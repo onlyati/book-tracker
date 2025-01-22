@@ -51,7 +51,6 @@ func TestBook_Equals(t *testing.T) {
 		NumberOfPages int
 		Covers        []int
 		AuthorLinks   []AuthorLink
-		Authors       []Author
 	}
 	type args struct {
 		other Book
@@ -72,7 +71,6 @@ func TestBook_Equals(t *testing.T) {
 				NumberOfPages: tt.fields.NumberOfPages,
 				Covers:        tt.fields.Covers,
 				AuthorLinks:   tt.fields.AuthorLinks,
-				Authors:       tt.fields.Authors,
 			}
 			if got := b.Equals(tt.args.other); got != tt.want {
 				t.Errorf("Book.Equals() = %v, want %v", got, tt.want)

@@ -8,6 +8,10 @@ import (
 	"os"
 )
 
+func GetCoverFileName(size string, isbn int) string {
+	return fmt.Sprintf("%d-%s.jpg", isbn, size)
+}
+
 func GetCoverLink(size string, isbn int) string {
 	return fmt.Sprintf("https://covers.openlibrary.org/b/isbn/%d-%s.jpg", isbn, size)
 }
