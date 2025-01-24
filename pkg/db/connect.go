@@ -2,11 +2,14 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"log/slog"
+	"os"
 
 	"github.com/onlyati/book-tracker/pkg/configs"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func CreateDbConnection(config configs.AppConfig) (*gorm.DB, error) {
@@ -26,7 +29,17 @@ func CreateDbConnection(config configs.AppConfig) (*gorm.DB, error) {
 		config.Db.DbName,
 		config.Db.Port,
 	)
-	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "", log.LstdFlags),
+		logger.Config{
+			LogLevel: logger.Info, // Log level Info will output everything
+		},
+	)
+
+	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		return nil, err
 	}

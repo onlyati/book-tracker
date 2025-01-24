@@ -117,7 +117,7 @@ func (app *App) UpdateCategoryV1(c *gin.Context) {
 // Delete
 //
 
-func (app *App) SoftDeleteCategoryV1(c *gin.Context) {
+func (app *App) DeleteCategoryV1(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, Error{Error: "missing new_name parameter"})
@@ -131,20 +131,11 @@ func (app *App) SoftDeleteCategoryV1(c *gin.Context) {
 		return
 	}
 
-	err = db.SoftDeleteCategoryService(app.Db, index)
+	err = db.DeleteCategoryService(app.Db, index)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Error{Error: err.Error()})
 		return
 	}
 
-	c.Status(http.StatusOK)
-}
-
-func (app *App) HardDeleteCategoriesV1(c *gin.Context) {
-	err := db.HardDeleteCategoriesService(app.Db)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, Error{Error: err.Error()})
-		return
-	}
 	c.Status(http.StatusOK)
 }

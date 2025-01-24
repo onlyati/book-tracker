@@ -81,22 +81,7 @@ func UpdateCategoryService(db *gorm.DB, id uint64, newName string) (*Category, e
 // Delete
 //
 
-func SoftDeleteCategoryService(db *gorm.DB, id uint64) error {
+func DeleteCategoryService(db *gorm.DB, id uint64) error {
 	err := db.Where("id = ?", id).Delete(&Category{}).Error
-	return err
-}
-
-func HardDeleteCategoriesService(db *gorm.DB) error {
-	var categories []Category
-	err := db.Unscoped().Where("deleted_at is not null").Find(&categories).Error
-	if err != nil {
-		return err
-	}
-
-	if len(categories) == 0 {
-		return nil
-	}
-
-	err = db.Unscoped().Delete(&categories).Error
 	return err
 }

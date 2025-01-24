@@ -37,8 +37,7 @@ func (app *App) StartListen() error {
 	userVersion1.GET("/", app.GetUserV1)
 	userVersion1.GET("/list", app.GetUsersV1)
 	userVersion1.PATCH("/", app.UpdateUserV1)
-	userVersion1.DELETE("/", app.SoftDeleteUserV1)
-	userVersion1.DELETE("/cleanup", app.HardDeleteUsersV1)
+	userVersion1.DELETE("/", app.DeleteUserV1)
 
 	// Category endpoints
 	category := api.Group("/category")
@@ -47,8 +46,14 @@ func (app *App) StartListen() error {
 	categoryVersion1.GET("/", app.GetCategoryV1)
 	categoryVersion1.GET("/list", app.GetCategoriesV1)
 	categoryVersion1.PATCH("/", app.UpdateCategoryV1)
-	categoryVersion1.DELETE("/", app.SoftDeleteCategoryV1)
-	categoryVersion1.DELETE("/cleanup", app.HardDeleteCategoriesV1)
+	categoryVersion1.DELETE("/", app.DeleteCategoryV1)
+
+	// Book endpoints
+	book := api.Group("/book")
+	bookVersionV1 := book.Group("v1")
+	bookVersionV1.POST("/", app.CreateBookV1)
+	bookVersionV1.GET("/", app.GetBookV1)
+	bookVersionV1.GET("/list", app.GetBooksV1)
 
 	router.Run(":3000")
 

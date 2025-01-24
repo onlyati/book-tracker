@@ -81,7 +81,7 @@ func UpdateUserService(db *gorm.DB, id uint64, newName string) (*User, error) {
 // Delete
 //
 
-func SoftDeleteUserService(db *gorm.DB, id uint64) error {
+func DeleteUserService(db *gorm.DB, id uint64) error {
 	err := db.Where("id = ?", id).Delete(&User{}).Error
 	return err
 }

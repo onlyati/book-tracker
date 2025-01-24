@@ -117,7 +117,7 @@ func (app *App) UpdateUserV1(c *gin.Context) {
 // Delete
 //
 
-func (app *App) SoftDeleteUserV1(c *gin.Context) {
+func (app *App) DeleteUserV1(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, Error{Error: "missing new_name parameter"})
@@ -131,20 +131,11 @@ func (app *App) SoftDeleteUserV1(c *gin.Context) {
 		return
 	}
 
-	err = db.SoftDeleteUserService(app.Db, index)
+	err = db.DeleteUserService(app.Db, index)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Error{Error: err.Error()})
 		return
 	}
 
-	c.Status(http.StatusOK)
-}
-
-func (app *App) HardDeleteUsersV1(c *gin.Context) {
-	err := db.HardDeleteUsersService(app.Db)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, Error{Error: err.Error()})
-		return
-	}
 	c.Status(http.StatusOK)
 }

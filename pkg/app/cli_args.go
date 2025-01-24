@@ -27,10 +27,14 @@ func parseArgs() (*Cli, *kong.Context, error) {
 	var args Cli
 	ctx := kong.Parse(&args)
 	if args.JsonLog {
-		logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
 		slog.SetDefault(logger)
 	} else {
-		logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+		logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
 		slog.SetDefault(logger)
 	}
 	err := args.Validate()

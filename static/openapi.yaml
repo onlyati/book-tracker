@@ -12,6 +12,8 @@ tags:
     description: User settings related endpoints
   - name: category
     description: Category related endpoints
+  - name: book
+    description: Book related endpoints
 servers:
   - url: "http://{{.HostName}}:{{.Port}}"
     description: Host server
@@ -129,10 +131,6 @@ paths:
       responses:
         200:
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
         400:
           description: Parameter is missing
           content:
@@ -163,33 +161,13 @@ paths:
                 schema:
                   type: array
                   items: 
-                    type: "#/components/schemas/User"
+                    $ref: "#/components/schemas/User"
           400:
             description: Parameter is missing
             content:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Error"
-          500:
-            description: User does not exists
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/Error"
-  /api/user/v1/cleanup:
-    delete:
-      tags:
-        - user
-      summary: Hard delete on users
-      responses:
-          200:
-            description: Successful operation
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items: 
-                    type: "#/components/schemas/User"
           500:
             description: User does not exists
             content:
@@ -309,10 +287,6 @@ paths:
       responses:
         200:
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Category"
         400:
           description: Parameter is missing
           content:
@@ -343,7 +317,7 @@ paths:
                 schema:
                   type: array
                   items: 
-                    type: "#/components/schemas/Category"
+                    $ref: "#/components/schemas/Category"
           400:
             description: Parameter is missing
             content:
@@ -356,32 +330,165 @@ paths:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Error"
-  /api/category/v1/cleanup:
-    delete:
+  /api/book/v1:
+    get:
       tags:
-        - category
-      summary: Hard delete on category
+        - book
+      summary: Get all details from a specific book
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: number
       responses:
-          200:
+        200:
+          description: Successful operation
+          content:
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Book"
+        400:
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Book does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - book
+      summary: Create a new book based on ISBN number
+      parameters:
+        - name: isbn
+          in: query
+          schema:
+            type: number
+      responses:
+        200:
             description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Book"
+        400:
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/book/v1/list:
+    get:
+      tags:
+        - book
+      summary: List registered books
+      parameters:
+        - name: index
+          in: query
+          schema:
+            type: number
+      responses:
+        200:
+          description: Successful operation
+          content:
             content:
               application/json:
                 schema:
                   type: array
                   items: 
-                    type: "#/components/schemas/Category"
-          500:
-            description: Category does not exists
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/Error"
+                    $ref: "#/components/schemas/Book"
+        400:
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Book does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Category does not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Error:
       type: object
       properties:
         error:
+          type: string
+    Book:
+      type: object
+      properties:
+        id:
+          type: number
+        created_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        updated_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        deleted_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        title:
+          type: string
+        number_of_pages:
+          type: number
+        cover:
+          type: string
+          description: file name for the cover
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+        authors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Author"
+    Author:
+      type: object
+      properties:
+        id:
+          type: number
+        created_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        updated_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        deleted_at:
+          type: string
+          format: "1970-01-01T12:00:00.000000Z"
+        name:
+          type: string
+        alternate_names:
           type: string
     User:
       type: object

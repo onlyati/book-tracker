@@ -8,15 +8,15 @@ import (
 	"os"
 )
 
-func GetCoverFileName(size string, isbn int) string {
+func GetCoverFileName(size string, isbn uint64) string {
 	return fmt.Sprintf("%d-%s.jpg", isbn, size)
 }
 
-func GetCoverLink(size string, isbn int) string {
+func GetCoverLink(size string, isbn uint64) string {
 	return fmt.Sprintf("https://covers.openlibrary.org/b/isbn/%d-%s.jpg", isbn, size)
 }
 
-func GetCover(size string, isbn int, path string) error {
+func GetCover(size string, isbn uint64, path string) error {
 	addr := GetCoverLink(size, isbn)
 	slog.Debug("get cover based on isbn", "isbn", isbn, "url", addr)
 

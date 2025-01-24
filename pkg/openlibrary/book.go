@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func GetBook(isbn int) (*Book, error) {
+func GetBook(isbn uint64) (*Book, error) {
 	// We are looking for book based on its ISBN number
 	addr := fmt.Sprintf("https://openlibrary.org/isbn/%d.json", isbn)
 	slog.Debug("fetching based on ISBN", "isbn", isbn, "url", addr)

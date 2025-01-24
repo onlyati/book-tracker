@@ -19,7 +19,7 @@ var (
 
 func TestGetBook(t *testing.T) {
 	type args struct {
-		isbn int
+		isbn uint64
 	}
 	tests := []struct {
 		name    string

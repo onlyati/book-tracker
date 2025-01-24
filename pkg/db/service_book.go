@@ -9,7 +9,7 @@ import (
 // Create
 //
 
-func CreateBookService(db *gorm.DB, isbn int) (*Book, error) {
+func CreateBookService(db *gorm.DB, isbn uint64) (*Book, error) {
 	book_raw, err := openlibrary.GetBook(isbn)
 	if err != nil {
 		return nil, err
@@ -46,6 +46,7 @@ func CreateBookService(db *gorm.DB, isbn int) (*Book, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &book, nil
 }
 
@@ -98,6 +99,30 @@ func AssignCategoryToUserService(db *gorm.DB, category_id uint64, book_id uint64
 }
 
 //
+// Read
+//
+
+func ListBookService(db *gorm.DB, index uint64) ([]Book, error) {
+	var books []Book
+	err := db.Preload("Authors").Unscoped().Where("id > ?", index).Limit(10).Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return books, nil
+}
+
+func ReadBookService(db *gorm.DB, id uint64) (*Book, error) {
+	var book Book
+	err := db.Preload("Authors").Preload("Users").Preload("Categories").Unscoped().Where("id = ?", id).First(&book).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &book, nil
+}
+
+//
 // Delete
 //
 
@@ -124,7 +149,7 @@ func DeleteBookService(db *gorm.DB, book_id uint64) error {
 			return err
 		}
 
-		err = db.Where("id = ?", book_id).Delete(&book).Error
+		err = db.Unscoped().Where("id = ?", book_id).Delete(&book).Error
 		if err != nil {
 			return err
 		}

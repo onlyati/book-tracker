@@ -5,7 +5,7 @@ import "testing"
 func TestGetCover(t *testing.T) {
 	type args struct {
 		size string
-		isbn int
+		isbn uint64
 		path string
 	}
 	tests := []struct {
